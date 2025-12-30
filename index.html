@@ -3,90 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rastreio de Equipamento</title>
+    <title>Rastreamento de Pedido</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
-        /* Estilo Básico (CSS) para ficar bonito */
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
-        input { width: 80%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px; }
-        button { background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; }
-        button:hover { background-color: #0056b3; }
-        #resultado { margin-top: 20px; text-align: left; border-top: 1px solid #eee; padding-top: 10px; display: none; }
-        .status-item { margin-bottom: 10px; }
-        .label { font-weight: bold; color: #555; }
-        .erro { color: red; margin-top: 10px; }
+        :root {
+            --primary-color: #0d47a1; 
+            --accent-color: #2979ff;
+            --success-color: #00c853;
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .main-wrapper {
+            width: 100%;
+            max-width: 480px;
+            padding: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .logo-area { margin-bottom: 20px; }
+        .logo-area i { font-size: 40px; color: var(--primary-color); }
+        h2 { margin: 10px 0 5px 0; color: var(--primary-color); font-weight: 600; }
+        p.subtitle { color: #666; font-size: 14px; margin-bottom: 25px; }
+
+        .input-group { position: relative; margin-bottom: 20px; }
+        input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        input:focus { border-color: var(--accent-color); }
+        .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #999; }
+
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(41, 121, 255, 0.3);
+            transition: transform 0.2s;
+        }
+        button:active { transform: scale(0.98); }
+
+        #resultado { display: none; margin-top: 30px; text-align: left; border-top: 1px solid #eee; padding-top: 20px; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .info-row { margin-bottom: 15px; }
+        .info-label { font-size: 12px; text-transform: uppercase; color: #888; letter-spacing: 1px; font-weight: 600; }
+        .info-value { font-size: 16px; font-weight: 500; color: #222; margin-top: 4px; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            background-color: #e3f2fd;
+            color: var(--primary-color);
+        }
+
+        .progress-container {
+            height: 6px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            margin: 15px 0 25px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: var(--success-color);
+            width: 0%;
+            transition: width 1s ease;
+        }
+
+        .whatsapp-btn {
+            display: block;
+            margin-top: 20px;
+            text-decoration: none;
+            background-color: #25D366;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .erro { color: #d32f2f; margin-top: 15px; font-size: 14px; display: none; }
+        .loader { display: none; color: var(--primary-color); margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>Rastrear Equipamento</h2>
-        <p>Digite o código fornecido:</p>
-        <input type="text" id="codigoInput" placeholder="Ex: EQP001">
-        <button onclick="buscarPedido()">Buscar</button>
+    <div class="main-wrapper">
+        <div class="card">
+            <div class="logo-area"><i class="fas fa-industry"></i></div>
+            <h2>Rastreamento</h2>
+            <p class="subtitle">Digite o código para acompanhar seu equipamento</p>
 
-        <div id="resultado">
-            <div class="status-item"><span class="label">Cliente:</span> <span id="resCliente"></span></div>
-            <div class="status-item"><span class="label">Status Atual:</span> <span id="resStatus"></span></div>
-            <div class="status-item"><span class="label">Obs:</span> <span id="resObs"></span></div>
+            <div class="input-group">
+                <i class="fas fa-search input-icon"></i>
+                <input type="text" id="codigoInput" placeholder="Ex: EQP001">
+            </div>
+            
+            <button onclick="buscarPedido()">Rastrear Pedido</button>
+            <div id="loader" class="loader"><i class="fas fa-spinner fa-spin"></i> Buscando...</div>
+            <div id="erroMsg" class="erro"></div>
+
+            <div id="resultado">
+                <div class="info-row">
+                    <div class="info-label">Cliente</div>
+                    <div class="info-value" id="resCliente">--</div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">Status Atual</div>
+                    <span id="resStatusBadge" class="status-badge">--</span>
+                </div>
+
+                <div class="progress-container">
+                    <div id="progressBar" class="progress-bar"></div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">Detalhes</div>
+                    <div class="info-value" id="resObs">--</div>
+                </div>
+
+                <a href="https://wa.me/5511999999999?text=Olá, consultei meu pedido e gostaria de mais detalhes." target="_blank" class="whatsapp-btn">
+                    <i class="fab fa-whatsapp"></i> Falar com Suporte
+                </a>
+            </div>
         </div>
-        <div id="erroMsg" class="erro"></div>
     </div>
 
     <script>
-        // --- AQUI ESTÁ A MÁGICA DO JAVASCRIPT ---
+        // SEU LINK JÁ ESTÁ CONFIGURADO AQUI:
+        const googleLink = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSsNRvI3HGnXEZk_YvvmqOaJY4R36seQoZW8iAJi6yARpcPXkDlyO3mT41EH0gQxysOO99RJBsE5xk/pub?gid=0&single=true&output=csv'; 
         
-        // COLE AQUI O LINK QUE VOCÊ COPIOU DO GOOGLE SHEETS (O QUE TERMINA EM .csv)
-        const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSsNRvI3HGnXEZk_YvvmqOaJY4R36seQoZW8iAJi6yARpcPXkDlyO3mT41EH0gQxysOO99RJBsE5xk/pub?gid=0&single=true&output=csv'; 
+        // Proxy de segurança
+        const SHEET_URL = 'https://corsproxy.io/?' + encodeURIComponent(googleLink);
 
         async function buscarPedido() {
             const codigoDigitado = document.getElementById('codigoInput').value.trim().toUpperCase();
             const divResultado = document.getElementById('resultado');
             const divErro = document.getElementById('erroMsg');
-            
-            // Limpa mensagens anteriores
+            const loader = document.getElementById('loader');
+            const btn = document.querySelector('button');
+
             divResultado.style.display = 'none';
-            divErro.innerText = 'Buscando...';
+            divErro.style.display = 'none';
+            loader.style.display = 'block';
+            btn.disabled = true;
 
             try {
-                // 1. O JavaScript vai até o Google buscar a planilha
                 const resposta = await fetch(SHEET_URL);
                 const texto = await resposta.text();
-
-                // 2. Transforma o texto CSV em linhas
                 const linhas = texto.split('\n');
                 
                 let encontrado = false;
 
-                // 3. Varre linha por linha procurando o código
-                for (let i = 1; i < linhas.length; i++) { // Começa do 1 pra pular o cabeçalho
-                    // Divide a linha nas colunas (separadas por vírgula)
-                    const colunas = linhas[i].split(',');
+                // Loop para ler as linhas (Começa na 1 para pular cabeçalho)
+                for (let i = 1; i < linhas.length; i++) {
+                    // Separa por vírgula, mas cuida se tiver aspas
+                    const colunas = linhas[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                     
-                    // Coluna 0 é o código, 1 é cliente, 2 é status, 3 é obs
-                    const codigoNaPlanilha = colunas[0].trim().toUpperCase();
+                    if (colunas.length < 2) continue;
+
+                    const codigoNaPlanilha = colunas[0].trim().replace(/"/g, '').toUpperCase();
 
                     if (codigoNaPlanilha === codigoDigitado) {
-                        // ACHOU! Preenche os dados na tela
-                        document.getElementById('resCliente').innerText = colunas[1]; // Coluna B
-                        document.getElementById('resStatus').innerText = colunas[2];  // Coluna C
-                        document.getElementById('resObs').innerText = colunas[3];     // Coluna D
+                        // Preencher dados na tela
+                        document.getElementById('resCliente').innerText = colunas[1].replace(/"/g, ''); 
                         
+                        const statusTexto = colunas[2].replace(/"/g, '');
+                        document.getElementById('resStatusBadge').innerText = statusTexto;
+                        document.getElementById('resObs').innerText = colunas[3] ? colunas[3].replace(/"/g, '') : '';
+                        
+                        atualizarBarraProgresso(statusTexto);
+
                         divResultado.style.display = 'block';
-                        divErro.innerText = '';
                         encontrado = true;
                         break;
                     }
                 }
 
                 if (!encontrado) {
-                    divErro.innerText = 'Código não encontrado. Verifique e tente novamente.';
+                    divErro.innerText = 'Código não encontrado. Verifique se digitou corretamente.';
+                    divErro.style.display = 'block';
                 }
 
             } catch (erro) {
                 console.error(erro);
-                divErro.innerText = 'Erro ao conectar com o sistema.';
+                divErro.innerText = 'Erro de conexão ou planilha vazia.';
+                divErro.style.display = 'block';
+            } finally {
+                loader.style.display = 'none';
+                btn.disabled = false;
             }
+        }
+
+        function atualizarBarraProgresso(status) {
+            const bar = document.getElementById('progressBar');
+            let largura = '10%'; 
+            const s = status.toLowerCase();
+
+            // AJUSTE AQUI AS PALAVRAS QUE VOCÊS USAM NA PLANILHA
+            if (s.includes('pedido') || s.includes('entrada')) largura = '20%';
+            else if (s.includes('corte') || s.includes('separação')) largura = '40%';
+            else if (s.includes('montagem') || s.includes('produção')) largura = '60%';
+            else if (s.includes('teste') || s.includes('pintura')) largura = '80%';
+            else if (s.includes('pronto') || s.includes('finalizado') || s.includes('enviado')) largura = '100%';
+            
+            setTimeout(() => { bar.style.width = largura; }, 100);
         }
     </script>
 </body>
