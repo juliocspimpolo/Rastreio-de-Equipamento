@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rastreio de Equipamento</title>
+    <style>
+        /* Estilo Básico (CSS) para ficar bonito */
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        input { width: 80%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        button { background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #0056b3; }
+        #resultado { margin-top: 20px; text-align: left; border-top: 1px solid #eee; padding-top: 10px; display: none; }
+        .status-item { margin-bottom: 10px; }
+        .label { font-weight: bold; color: #555; }
+        .erro { color: red; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Rastrear Equipamento</h2>
+        <p>Digite o código fornecido:</p>
+        <input type="text" id="codigoInput" placeholder="Ex: EQP001">
+        <button onclick="buscarPedido()">Buscar</button>
+
+        <div id="resultado">
+            <div class="status-item"><span class="label">Cliente:</span> <span id="resCliente"></span></div>
+            <div class="status-item"><span class="label">Status Atual:</span> <span id="resStatus"></span></div>
+            <div class="status-item"><span class="label">Obs:</span> <span id="resObs"></span></div>
+        </div>
+        <div id="erroMsg" class="erro"></div>
+    </div>
+
+    <script>
+        // --- AQUI ESTÁ A MÁGICA DO JAVASCRIPT ---
+        
+        // COLE AQUI O LINK QUE VOCÊ COPIOU DO GOOGLE SHEETS (O QUE TERMINA EM .csv)
+        const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSsNRvI3HGnXEZk_YvvmqOaJY4R36seQoZW8iAJi6yARpcPXkDlyO3mT41EH0gQxysOO99RJBsE5xk/pub?gid=0&single=true&output=csv'; 
+
+        async function buscarPedido() {
+            const codigoDigitado = document.getElementById('codigoInput').value.trim().toUpperCase();
+            const divResultado = document.getElementById('resultado');
+            const divErro = document.getElementById('erroMsg');
+            
+            // Limpa mensagens anteriores
+            divResultado.style.display = 'none';
+            divErro.innerText = 'Buscando...';
+
+            try {
+                // 1. O JavaScript vai até o Google buscar a planilha
+                const resposta = await fetch(SHEET_URL);
+                const texto = await resposta.text();
+
+                // 2. Transforma o texto CSV em linhas
+                const linhas = texto.split('\n');
+                
+                let encontrado = false;
+
+                // 3. Varre linha por linha procurando o código
+                for (let i = 1; i < linhas.length; i++) { // Começa do 1 pra pular o cabeçalho
+                    // Divide a linha nas colunas (separadas por vírgula)
+                    const colunas = linhas[i].split(',');
+                    
+                    // Coluna 0 é o código, 1 é cliente, 2 é status, 3 é obs
+                    const codigoNaPlanilha = colunas[0].trim().toUpperCase();
+
+                    if (codigoNaPlanilha === codigoDigitado) {
+                        // ACHOU! Preenche os dados na tela
+                        document.getElementById('resCliente').innerText = colunas[1]; // Coluna B
+                        document.getElementById('resStatus').innerText = colunas[2];  // Coluna C
+                        document.getElementById('resObs').innerText = colunas[3];     // Coluna D
+                        
+                        divResultado.style.display = 'block';
+                        divErro.innerText = '';
+                        encontrado = true;
+                        break;
+                    }
+                }
+
+                if (!encontrado) {
+                    divErro.innerText = 'Código não encontrado. Verifique e tente novamente.';
+                }
+
+            } catch (erro) {
+                console.error(erro);
+                divErro.innerText = 'Erro ao conectar com o sistema.';
+            }
+        }
+    </script>
+</body>
+</html>
