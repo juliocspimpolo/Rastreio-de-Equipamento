@@ -41,8 +41,17 @@
             text-align: center;
         }
 
-        .logo-area { margin-bottom: 20px; }
-        .logo-area i { font-size: 40px; color: var(--primary-color); }
+        /* --- ÁREA DO LOGO (Atualizado) --- */
+        .logo-area { margin-bottom: 25px; }
+        
+        /* Estilo para a imagem do logo */
+        .logo-area img {
+            max-width: 180px; /* Define um tamanho máximo para não ficar gigante */
+            height: auto;     /* Mantém a proporção da imagem */
+            display: block;   /* Ajuda na centralização */
+            margin: 0 auto;   /* Centraliza horizontalmente */
+        }
+
         h2 { margin: 10px 0 5px 0; color: var(--primary-color); font-weight: 600; }
         p.subtitle { color: #666; font-size: 14px; margin-bottom: 25px; }
 
@@ -127,7 +136,10 @@
 
     <div class="main-wrapper">
         <div class="card">
-            <div class="logo-area"><i class="fas fa-industry"></i></div>
+            <div class="logo-area">
+                <img src="logo.png" alt="Logo da Empresa">
+            </div>
+
             <h2>Rastreamento</h2>
             <p class="subtitle">Digite o código para acompanhar seu equipamento</p>
 
@@ -168,7 +180,7 @@
     </div>
 
     <script>
-        // LINK DA PLANILHA CONFIGURADO
+        // LINK DA PLANILHA CORRETO
         const googleLink = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSsNRvI3HGnXEZk_YvvmqOaJY4R36seQoZW8iAJi6yARpcPXkDlyO3mT41EH0gQxysOO99RJBsE5xk/pub?gid=0&single=true&output=csv'; 
         
         // Proxy de segurança
