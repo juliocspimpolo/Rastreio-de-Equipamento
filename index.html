@@ -160,7 +160,7 @@
                     <div class="info-value" id="resObs">--</div>
                 </div>
 
-                <a href="https://wa.me/5511939386767?text=Olá, consultei meu pedido e gostaria de mais detalhes." target="_blank" class="whatsapp-btn">
+                <a href="https://wa.me/5511939386767?text=Olá, consultei meu pedido no site e gostaria de mais detalhes." target="_blank" class="whatsapp-btn">
                     <i class="fab fa-whatsapp"></i> Falar com Suporte
                 </a>
             </div>
@@ -168,7 +168,7 @@
     </div>
 
     <script>
-        // SEU LINK JÁ ESTÁ CONFIGURADO AQUI:
+        // LINK DA PLANILHA CONFIGURADO
         const googleLink = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSsNRvI3HGnXEZk_YvvmqOaJY4R36seQoZW8iAJi6yARpcPXkDlyO3mT41EH0gQxysOO99RJBsE5xk/pub?gid=0&single=true&output=csv'; 
         
         // Proxy de segurança
@@ -195,7 +195,6 @@
 
                 // Loop para ler as linhas (Começa na 1 para pular cabeçalho)
                 for (let i = 1; i < linhas.length; i++) {
-                    // Separa por vírgula, mas cuida se tiver aspas
                     const colunas = linhas[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                     
                     if (colunas.length < 2) continue;
@@ -238,7 +237,6 @@
             let largura = '10%'; 
             const s = status.toLowerCase();
 
-            // AJUSTE AQUI AS PALAVRAS QUE VOCÊS USAM NA PLANILHA
             if (s.includes('pedido') || s.includes('entrada')) largura = '20%';
             else if (s.includes('corte') || s.includes('separação')) largura = '40%';
             else if (s.includes('montagem') || s.includes('produção')) largura = '60%';
@@ -250,4 +248,3 @@
     </script>
 </body>
 </html>
-
